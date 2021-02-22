@@ -1,0 +1,12 @@
+.container {
+    border: 0.1rem;
+    border-color: lightgray;
+    border-style: solid;
+    margin: 1rem;
+    width: auto;
+    border-radius: 4px;
+}
+
+.timestamp {
+    color: lightgray;
+}
