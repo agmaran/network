@@ -1,14 +1,13 @@
 {% extends "network/layout.html" %}
 {% load static %}
 {% block body %}
-<h1 class="ml-1">Profile</h1>
+<h1 class="ml-1">{{user_profile.username}}</h1>
 <div id="follow">
-    <div>Followers: {{followers}}</div>
+    <div id="followers" data-followers={{followers}}>Followers: {{followers}}</div>
     <div>Following: {{following}}</div>
-    {% if  button == 'unfollow'%}
-    <button class="btn btn-primary mt-1 mb-1">Unfollow</button>
-    {% elif user_profile != user %}
-    <button class="btn btn-primary mt-1 mb-1">Follow</button>
+    {% if user.is_authenticated and user != user_profile %}
+    <button id="follow-button" class="btn btn-primary mt-1 mb-1"
+        data-username={{user_profile.username}}>{{button}}</button>
     {% endif %}
 </div>
 <div id="my-posts">
@@ -29,5 +28,5 @@
 </div>
 {% endblock %}
 {% block script %}
-<script type="text/babel" src="{% static 'network/profile.js' %}"></script>
+<script src="{% static 'network/profile.js' %}"></script>
 {% endblock %}
