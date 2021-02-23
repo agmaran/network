@@ -95,7 +95,7 @@ def profile(request, username):
     followers = Follow.objects.filter(following=user)
     following = Follow.objects.filter(follower=user)
     if (request.user.is_authenticated):
-        if (Follow.objects.filter(follower=request.user, following=user).count() > 0):
+        if (Follow.objects.filter(follower=request.user, following=user).count() == 1):
             button = "unfollow"
         else:
             button = "follow"
@@ -110,3 +110,24 @@ def profile(request, username):
         "posts": posts,
         "button": button
     })
+
+
+@csrf_exempt
+@login_required(login_url="login")
+def follow(request):
+    data = json.loads(request.body)
+    following = User.objects.get(username=data.get("username"))
+    follower = request.user
+    follow = Follow(follower=follower, following=following)
+    follow.save()
+    return JsonResponse({"message": "You are now following this user."})
+
+
+@csrf_exempt
+def unfollow(request):
+    data = json.loads(request.body)
+    following = User.objects.get(username=data.get("username"))
+    follower = request.user
+    follow = Follow.objects.filter(follower=follower, following=following)
+    follow.delete()
+    return JsonResponse({"message": "You are no longer following this user."})
