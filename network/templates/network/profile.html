@@ -3,9 +3,12 @@
 {% block body %}
 <h1 class="ml-1">{{user_profile.username}}</h1>
 <div id="follow">
-    <div>Followers: {{followers}}</div>
+    <div id="followers" data-followers={{followers}}>Followers: {{followers}}</div>
     <div>Following: {{following}}</div>
-    <button id="follow-button" class="btn btn-primary mt-1 mb-1" data-username={{user_profile.username}}>{{button}}</button>
+    {% if user.is_authenticated %}
+    <button id="follow-button" class="btn btn-primary mt-1 mb-1"
+        data-username={{user_profile.username}}>{{button}}</button>
+    {% endif %}
 </div>
 <div id="my-posts">
     {% for post in posts %}
