@@ -20,14 +20,18 @@ class NewPost extends React.Component {
             .then(response => response.json())
             .then(result => {
                 if (result.error) {
-                    console.log(error)
+                    const alert = document.createElement('div');
+                    alert.classList = "alert alert-danger";
+                    alert.innerHTML = result.error
+                    document.querySelector('#new-post').append(alert);
                 }
             })
     }
 
     render() {
+
         return (
-            <div className="container col-12">
+            <div id="new-post" className="container col-12">
                 <h2>New Post</h2>
                 <form id="new-post-form" onSubmit={this.post}>
                     <textarea className="form-control" id="new-post-text" value={this.state.text} onChange={this.updateTextArea}></textarea>
@@ -35,9 +39,12 @@ class NewPost extends React.Component {
                 </form>
             </div>
         );
+
     }
 }
-ReactDOM.render(<NewPost />, document.querySelector('#new-post'));
+if (document.querySelector('#new-post').dataset.user === "user_is_authenticated") {
+    ReactDOM.render(<NewPost />, document.querySelector('#new-post'));
+}
 
 class AllPosts extends React.Component {
     constructor(props) {
@@ -69,7 +76,7 @@ class AllPosts extends React.Component {
                 <div key={post.id} className="container col-12">
                     <a className="username" data-username={post.poster}><strong>{post.poster}</strong></a>
                     {this.state.current_user == post.poster &&
-                        <a href="#">Edit</a>
+                        <div><a href="#">Edit</a></div>
                     }
                     <p>{post.content}</p>
                     <div className="timestamp">{post.timestamp}</div>

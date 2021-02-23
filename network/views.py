@@ -68,7 +68,6 @@ def register(request):
 
 
 @csrf_exempt
-@login_required(login_url="login")
 def newpost(request):
     data = json.loads(request.body)
     if data.get("text") == "":

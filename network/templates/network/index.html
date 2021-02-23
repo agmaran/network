@@ -2,7 +2,11 @@
 {% load static %}
 {% block body %}
 <h1 class="ml-1">All Posts</h1>
-<div id="new-post"></div>
+{% if user.is_authenticated %}
+<div id="new-post" data-user="user_is_authenticated"></div>
+{% else %}
+<div id="new-post" data-user="user_is_not_authenticated"></div>
+{% endif %}
 <div id="all-posts"></div>
 {% endblock %}
 {% block script %}
