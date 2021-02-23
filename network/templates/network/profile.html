@@ -1,0 +1,33 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<h1 class="ml-1">Profile</h1>
+<div id="follow">
+    <div>Followers: {{followers}}</div>
+    <div>Following: {{following}}</div>
+    {% if  button == 'unfollow'%}
+    <button class="btn btn-primary mt-1 mb-1">Unfollow</button>
+    {% elif user_profile != user %}
+    <button class="btn btn-primary mt-1 mb-1">Follow</button>
+    {% endif %}
+</div>
+<div id="my-posts">
+    {% for post in posts %}
+    <div class="container col-12">
+        <h3>{{post.poster}}</h3>
+        {% if user == user_profile %}
+        <a href="#">Edit</a>
+        {% endif %}
+        <p>{{post.content}}</p>
+        <div class="timestamp">{{post.timestamp}}</div>
+        <div class="row">
+            <i class="bi bi-star ml-3 mr-1"></i>
+            <div>{{post.likes}}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/babel" src="{% static 'network/profile.js' %}"></script>
+{% endblock %}

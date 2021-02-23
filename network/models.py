@@ -5,6 +5,9 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+class Follow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
 
 class Post(models.Model):
     poster = models.ForeignKey(

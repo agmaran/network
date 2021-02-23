@@ -10,3 +10,7 @@
 .timestamp {
     color: lightgray;
 }
+
+.username {
+    cursor: pointer;
+}

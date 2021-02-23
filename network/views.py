@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post
+from .models import User, Post, Follow
 
 
 def index(request):
@@ -87,4 +87,26 @@ def newpost(request):
 def allposts(request):
     posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
-    return JsonResponse({'current_user': request.user.username,'posts': [post.serialize() for post in posts]}, safe=False)
+    return JsonResponse({'current_user': request.user.username, 'posts': [post.serialize() for post in posts]}, safe=False)
+
+
+def profile(request, username):
+    user = User.objects.get(username=username)
+    followers = Follow.objects.filter(following=user)
+    following = Follow.objects.filter(follower=user)
+    if (request.user.is_authenticated):
+        if (Follow.objects.filter(follower=request.user, following=user).count() > 0):
+            button = "unfollow"
+        else:
+            button = "follow"
+    else:
+        button = "follow"
+    posts = user.my_posts.all()
+    posts = posts.order_by("-timestamp").all()
+    return render(request, "network/profile.html", {
+        "user_profile": user,
+        "followers": len(followers),
+        "following": len(following),
+        "posts": posts,
+        "button": button
+    })

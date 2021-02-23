@@ -51,6 +51,12 @@ class AllPosts extends React.Component {
             .then(result => {
                 console.log(result)
                 this.setState({ posts: result.posts, current_user: result.current_user })
+                document.querySelectorAll('.username').forEach(username => {
+                    username.onclick = function () {
+                        var url = `/${this.dataset.username}/profile`;
+                        window.location = url
+                    }
+                })
             })
             .catch(e => {
                 console.log(e);
@@ -61,7 +67,7 @@ class AllPosts extends React.Component {
         var posts = this.state.posts.map((post) => {
             return (
                 <div key={post.id} className="container col-12">
-                    <h3>{post.poster}</h3>
+                    <a className="username" data-username={post.poster}><strong>{post.poster}</strong></a>
                     {this.state.current_user == post.poster &&
                         <a href="#">Edit</a>
                     }
