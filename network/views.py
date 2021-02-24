@@ -134,10 +134,16 @@ def unfollow(request):
 
 def following(request):
     follows = Follow.objects.filter(follower=request.user)
+    message = ''
+    if not follows:
+        message = "You don't follow any users."
     following = []
     for follow in follows:
         following.append(follow.following)
     posts = Post.objects.filter(poster__in=following)
+    if not posts and follows:
+        message = "The users that you follow have not made any posts yet."
     return render(request, "network/following.html", {
-        "posts": posts
+        "posts": posts,
+        "message": message
     })
