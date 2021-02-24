@@ -3,10 +3,10 @@
 {% block body %}
 <h1 class="ml-1">{{user_profile.username}}</h1>
 <div id="follow">
-    <div id="followers" data-followers={{followers}}>Followers: {{followers}}</div>
-    <div>Following: {{following}}</div>
+    <div class="ml-3" id="followers" data-followers={{followers}}>Followers: {{followers}}</div>
+    <div class="ml-3">Following: {{following}}</div>
     {% if user.is_authenticated and user != user_profile %}
-    <button id="follow-button" class="btn btn-primary mt-1 mb-1"
+    <button id="follow-button" class="btn btn-primary mt-1 mb-1 ml-3"
         data-username={{user_profile.username}}>{{button}}</button>
     {% endif %}
 </div>
@@ -24,6 +24,8 @@
             <div>{{post.likes}}</div>
         </div>
     </div>
+    {% empty %}
+    <div class="no-posts col-12">This user has no posts.</div>
     {% endfor %}
 </div>
 {% endblock %}

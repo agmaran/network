@@ -14,3 +14,8 @@
 .username {
     cursor: pointer;
 }
+
+.no-posts{
+    align-self: center;
+    margin: 1rem;
+}
