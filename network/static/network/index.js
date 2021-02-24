@@ -49,7 +49,9 @@ if (document.querySelector('#new-post').dataset.user === "user_is_authenticated"
 class AllPosts extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { posts: [], current_user: '' };
+        this.state = { posts: [], current_user: '', postsStart: 0, postsEnd: 10 };
+        this.nextPage = this.nextPage.bind(this);
+        this.previousPage = this.previousPage.bind(this);
     }
 
     componentDidMount() {
@@ -70,6 +72,20 @@ class AllPosts extends React.Component {
             });
     };
 
+    previousPage() {
+        var start = this.state.postsStart - 10;
+        var end = this.state.postsEnd - 10;
+
+        this.setState({ postsStart: start, postsEnd: end });
+    }
+
+    nextPage() {
+        var start = this.state.postsStart + 10;
+        var end = this.state.postsEnd + 10;
+
+        this.setState({ postsStart: start, postsEnd: end });
+    }
+
     render() {
         var posts = this.state.posts.map((post) => {
             return (
@@ -88,7 +104,17 @@ class AllPosts extends React.Component {
             )
         })
 
-        return <div>{posts}</div>
+        return (
+            <div>
+                <div>{posts.slice(this.state.postsStart, this.state.postsEnd)}</div>
+                <nav aria-label="Page navigation example" className="col-12">
+                    <ul className="pagination">
+                        {this.state.postsStart > 0 && <li className="page-item"><a className="page-link" onClick={this.previousPage}>Previous</a></li>}
+                        {this.state.posts.length > 10 && this.state.posts.length > this.state.postsEnd && <li className="page-item"><a className="page-link" onClick={this.nextPage}>Next</a></li>}
+                    </ul>
+                </nav>
+            </div>
+        )
 
     }
 }
