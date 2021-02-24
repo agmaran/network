@@ -134,7 +134,7 @@ def unfollow(request):
     return JsonResponse({"message": "You are no longer following this user."})
 
 
-def following(request):
+def following(request, page_num):
     follows = Follow.objects.filter(follower=request.user)
     message = ''
     if not follows:
@@ -143,9 +143,12 @@ def following(request):
     for follow in follows:
         following.append(follow.following)
     posts = Post.objects.filter(poster__in=following)
+    posts = posts.order_by("-timestamp").all()
+    post_paginator = Paginator(posts, 10)
+    page = post_paginator.get_page(page_num)
     if not posts and follows:
         message = "The users that you follow have not made any posts yet."
     return render(request, "network/following.html", {
-        "posts": posts,
+        "page": page,
         "message": message
     })
