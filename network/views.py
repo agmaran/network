@@ -89,7 +89,7 @@ def allposts(request):
     return JsonResponse({'current_user': request.user.username, 'posts': [post.serialize() for post in posts]}, safe=False)
 
 
-def profile(request, username):
+def profile(request, username, page_num):
     user = User.objects.get(username=username)
     followers = Follow.objects.filter(following=user)
     following = Follow.objects.filter(follower=user)
@@ -102,11 +102,13 @@ def profile(request, username):
         button = "follow"
     posts = user.my_posts.all()
     posts = posts.order_by("-timestamp").all()
+    post_paginator = Paginator(posts, 10)
+    page = post_paginator.get_page(page_num)
     return render(request, "network/profile.html", {
         "user_profile": user,
         "followers": len(followers),
         "following": len(following),
-        "posts": posts,
+        "page": page,
         "button": button
     })
 

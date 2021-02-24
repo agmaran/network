@@ -23,3 +23,7 @@
 .page-link {
     cursor: pointer;
 }
+
+.bottom {
+    align-items: baseline;
+}

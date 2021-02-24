@@ -62,7 +62,7 @@ class AllPosts extends React.Component {
                 this.setState({ posts: result.posts, current_user: result.current_user })
                 document.querySelectorAll('.username').forEach(username => {
                     username.onclick = function () {
-                        var url = `/${this.dataset.username}/profile`;
+                        var url = `/1/${this.dataset.username}/profile`;
                         window.location = url
                     }
                 })
