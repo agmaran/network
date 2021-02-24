@@ -1,0 +1,18 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<h1 class="ml-1">Posts made by users you follow</h1>
+<div id="my-posts">
+    {% for post in posts %}
+    <div class="container col-12">
+        <a class="username" href="{% url 'profile' post.poster %}"><strong>{{ post.poster }}</strong></a>
+        <p>{{post.content}}</p>
+        <div class="timestamp">{{post.timestamp}}</div>
+        <div class="row">
+            <i class="bi bi-star ml-3 mr-1"></i>
+            <div>{{post.likes}}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

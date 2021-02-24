@@ -130,3 +130,14 @@ def unfollow(request):
     follow = Follow.objects.filter(follower=follower, following=following)
     follow.delete()
     return JsonResponse({"message": "You are no longer following this user."})
+
+
+def following(request):
+    follows = Follow.objects.filter(follower=request.user)
+    following = []
+    for follow in follows:
+        following.append(follow.following)
+    posts = Post.objects.filter(poster__in=following)
+    return render(request, "network/following.html", {
+        "posts": posts
+    })
