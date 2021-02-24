@@ -7,7 +7,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.paginator import Paginator
 from .models import User, Post, Follow
 
 
@@ -89,7 +89,7 @@ def allposts(request):
     return JsonResponse({'current_user': request.user.username, 'posts': [post.serialize() for post in posts]}, safe=False)
 
 
-def profile(request, username):
+def profile(request, username, page_num):
     user = User.objects.get(username=username)
     followers = Follow.objects.filter(following=user)
     following = Follow.objects.filter(follower=user)
@@ -102,11 +102,13 @@ def profile(request, username):
         button = "follow"
     posts = user.my_posts.all()
     posts = posts.order_by("-timestamp").all()
+    post_paginator = Paginator(posts, 10)
+    page = post_paginator.get_page(page_num)
     return render(request, "network/profile.html", {
         "user_profile": user,
         "followers": len(followers),
         "following": len(following),
-        "posts": posts,
+        "page": page,
         "button": button
     })
 
@@ -132,12 +134,21 @@ def unfollow(request):
     return JsonResponse({"message": "You are no longer following this user."})
 
 
-def following(request):
+def following(request, page_num):
     follows = Follow.objects.filter(follower=request.user)
+    message = ''
+    if not follows:
+        message = "You don't follow any users."
     following = []
     for follow in follows:
         following.append(follow.following)
     posts = Post.objects.filter(poster__in=following)
+    posts = posts.order_by("-timestamp").all()
+    post_paginator = Paginator(posts, 10)
+    page = post_paginator.get_page(page_num)
+    if not posts and follows:
+        message = "The users that you follow have not made any posts yet."
     return render(request, "network/following.html", {
-        "posts": posts
+        "page": page,
+        "message": message
     })

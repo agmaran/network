@@ -49,7 +49,10 @@ if (document.querySelector('#new-post').dataset.user === "user_is_authenticated"
 class AllPosts extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { posts: [], current_user: '' };
+        this.state = { posts: [], current_user: '', postsStart: 0, postsEnd: 10 };
+        this.nextPage = this.nextPage.bind(this);
+        this.previousPage = this.previousPage.bind(this);
+        this.goProfile = this.goProfile.bind(this);
     }
 
     componentDidMount() {
@@ -58,23 +61,38 @@ class AllPosts extends React.Component {
             .then(result => {
                 console.log(result)
                 this.setState({ posts: result.posts, current_user: result.current_user })
-                document.querySelectorAll('.username').forEach(username => {
-                    username.onclick = function () {
-                        var url = `/${this.dataset.username}/profile`;
-                        window.location = url
-                    }
-                })
             })
             .catch(e => {
                 console.log(e);
             });
     };
 
+    previousPage() {
+        var start = this.state.postsStart - 10;
+        var end = this.state.postsEnd - 10;
+
+        this.setState({ postsStart: start, postsEnd: end });
+    }
+
+    nextPage() {
+        var start = this.state.postsStart + 10;
+        var end = this.state.postsEnd + 10;
+
+        this.setState({ postsStart: start, postsEnd: end });
+    }
+
+    goProfile(event) {
+        var page = 1
+        var url = `/${page}/${event.currentTarget.getAttribute("data-username")}/profile`;
+        window.location = url
+    }
+
     render() {
+
         var posts = this.state.posts.map((post) => {
             return (
                 <div key={post.id} className="container col-12">
-                    <a className="username" data-username={post.poster}><strong>{post.poster}</strong></a>
+                    <a className="username" data-username={post.poster} onClick={this.goProfile}><strong>{post.poster}</strong></a>
                     {this.state.current_user == post.poster &&
                         <div><a href="#">Edit</a></div>
                     }
@@ -88,7 +106,17 @@ class AllPosts extends React.Component {
             )
         })
 
-        return <div>{posts}</div>
+        return (
+            <div>
+                <div>{posts.slice(this.state.postsStart, this.state.postsEnd)}</div>
+                <nav aria-label="Page navigation example" className="col-12">
+                    <ul className="pagination">
+                        {this.state.postsStart > 0 && <li className="page-item"><a className="page-link" onClick={this.previousPage}>Previous</a></li>}
+                        {this.state.posts.length > 10 && this.state.posts.length > this.state.postsEnd && <li className="page-item"><a className="page-link" onClick={this.nextPage}>Next</a></li>}
+                    </ul>
+                </nav>
+            </div>
+        )
 
     }
 }

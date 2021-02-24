@@ -15,7 +15,15 @@
     cursor: pointer;
 }
 
-.no-posts{
+.no-posts {
     align-self: center;
     margin: 1rem;
+}
+
+.page-link {
+    cursor: pointer;
+}
+
+.bottom {
+    align-items: baseline;
 }
