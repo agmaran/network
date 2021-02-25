@@ -152,3 +152,17 @@ def following(request, page_num):
         "page": page,
         "message": message
     })
+
+
+@csrf_exempt
+def editpost(request):
+    data = json.loads(request.body)
+    if data.get("content") == "":
+        return JsonResponse({
+            "error": "There should be some content in your post."
+        }, status=400)
+    else:
+        post = Post.objects.get(pk=data.get("post_id"))
+        post.content = data.get("content")
+        post.save()
+        return JsonResponse({"message": "Post saved."}, status=201)
