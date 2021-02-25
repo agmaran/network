@@ -31,7 +31,7 @@ class NewPost extends React.Component {
     render() {
 
         return (
-            <div id="new-post" className="container col-12">
+            <div className="container col-12">
                 <h2>New Post</h2>
                 <form id="new-post-form" onSubmit={this.post}>
                     <textarea className="form-control" id="new-post-text" value={this.state.text} onChange={this.updateTextArea}></textarea>
@@ -46,13 +46,59 @@ if (document.querySelector('#new-post').dataset.user === "user_is_authenticated"
     ReactDOM.render(<NewPost />, document.querySelector('#new-post'));
 }
 
+class EditPost extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { content: '' };
+        this.updateTextArea = this.updateTextArea.bind(this);
+        this.save = this.save.bind(this);
+    }
+
+    updateTextArea(event) {
+        this.setState({ content: event.target.value });
+    }
+
+    save(event) {
+        fetch('/editpost', {
+            method: 'POST',
+            body: JSON.stringify({
+                content: this.state.content,
+                post_id: this.props.post_id
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    console.log(result.error)
+                } else {
+                    document.querySelector(`#post${this.props.post_id}`).innerHTML = this.state.content
+                }
+            })
+        event.preventDefault();
+    }
+
+    render() {
+
+        return (
+            <div className="container col-12">
+                <form id="edit-post-form" onSubmit={this.save}>
+                    <textarea className="form-control" id="edit-post-text" value={this.state.content} onChange={this.updateTextArea}></textarea>
+                    <input type="submit" className="btn btn-primary mt-1 mb-1" value="Save" />
+                </form>
+            </div>
+        );
+
+    }
+}
+
 class AllPosts extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { posts: [], current_user: '', postsStart: 0, postsEnd: 10 };
+        this.state = { posts: [], current_user: '', postsStart: 0, postsEnd: 10, content: '' };
         this.nextPage = this.nextPage.bind(this);
         this.previousPage = this.previousPage.bind(this);
         this.goProfile = this.goProfile.bind(this);
+        this.edit = this.edit.bind(this);
     }
 
     componentDidMount() {
@@ -87,6 +133,10 @@ class AllPosts extends React.Component {
         window.location = url
     }
 
+    edit(event) {
+        ReactDOM.render(<EditPost post_id={event.currentTarget.getAttribute("data-post")} />, document.querySelector(`#post${event.currentTarget.getAttribute("data-post")}`))
+    }
+
     render() {
 
         var posts = this.state.posts.map((post) => {
@@ -94,9 +144,9 @@ class AllPosts extends React.Component {
                 <div key={post.id} className="container col-12">
                     <a className="username" data-username={post.poster} onClick={this.goProfile}><strong>{post.poster}</strong></a>
                     {this.state.current_user == post.poster &&
-                        <div><a href="#">Edit</a></div>
+                        <div><a data-post={post.id} onClick={this.edit} className="page-link" >Edit</a></div>
                     }
-                    <p>{post.content}</p>
+                    <div id={"post" + post.id}>{post.content}</div>
                     <div className="timestamp">{post.timestamp}</div>
                     <div className="row">
                         <i className="bi bi-star ml-3 mr-1"></i>
