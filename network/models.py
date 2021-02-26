@@ -5,16 +5,21 @@ from django.db import models
 class User(AbstractUser):
     pass
 
+
 class Follow(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
-    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
+    follower = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="following")
+    following = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="follower")
+
 
 class Post(models.Model):
     poster = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="my_posts")
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
-    likes = models.PositiveBigIntegerField(default=0)
+    likes = models.ManyToManyField(
+        User, related_name="liked_posts")
 
     def serialize(self):
         return{
@@ -22,5 +27,5 @@ class Post(models.Model):
             "poster": self.poster.username,
             "content": self.content,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
-            "likes": self.likes
+            "likes": len(self.likes.all())
         }

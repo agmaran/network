@@ -86,7 +86,12 @@ def newpost(request):
 def allposts(request):
     posts = Post.objects.all()
     posts = posts.order_by("-timestamp").all()
-    return JsonResponse({'current_user': request.user.username, 'posts': [post.serialize() for post in posts]}, safe=False)
+    logged_user = request.user
+    if logged_user.is_authenticated:
+        liked_posts = logged_user.liked_posts.all()
+        return JsonResponse({'current_user': request.user.username, 'posts': [post.serialize() for post in posts], 'liked_posts': [post.serialize() for post in liked_posts]}, safe=False)
+    else:
+        return JsonResponse({'current_user': request.user.username, 'posts': [post.serialize() for post in posts], 'liked_posts': None}, safe=False)
 
 
 def profile(request, username, page_num):
@@ -166,3 +171,29 @@ def editpost(request):
         post.content = data.get("content")
         post.save()
         return JsonResponse({"message": "Post saved."}, status=201)
+
+
+@csrf_exempt
+@login_required(login_url="login")
+def like(request):
+    data = json.loads(request.body)
+    post = Post.objects.get(pk=data.get("post_id"))
+    user = User.objects.get(pk=request.user.id)
+    post.likes.add(user)
+    posts = Post.objects.all()
+    posts = posts.order_by("-timestamp").all()
+    liked_posts = user.liked_posts.all()
+    return JsonResponse({'posts': [post.serialize() for post in posts], 'liked_posts': [post.serialize() for post in liked_posts]}, safe=False)
+
+
+@csrf_exempt
+@login_required(login_url="login")
+def unlike(request):
+    data = json.loads(request.body)
+    post = Post.objects.get(pk=data.get("post_id"))
+    user = User.objects.get(pk=request.user.id)
+    post.likes.remove(user)
+    posts = Post.objects.all()
+    posts = posts.order_by("-timestamp").all()
+    liked_posts = user.liked_posts.all()
+    return JsonResponse({'posts': [post.serialize() for post in posts], 'liked_posts': [post.serialize() for post in liked_posts]}, safe=False)

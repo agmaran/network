@@ -10,7 +10,7 @@ class NewPost extends React.Component {
         this.setState({ text: event.target.value });
     }
 
-    post(event) {
+    post() {
         fetch('/newpost', {
             method: 'POST',
             body: JSON.stringify({
@@ -94,11 +94,14 @@ class EditPost extends React.Component {
 class AllPosts extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { posts: [], current_user: '', postsStart: 0, postsEnd: 10, content: '' };
+        this.state = { posts: [], current_user: '', postsStart: 0, postsEnd: 10, content: '', liked_posts: [], liked_posts_ids: [] };
         this.nextPage = this.nextPage.bind(this);
         this.previousPage = this.previousPage.bind(this);
         this.goProfile = this.goProfile.bind(this);
         this.edit = this.edit.bind(this);
+        this.like = this.like.bind(this);
+        this.unlike = this.unlike.bind(this);
+        this.includes = this.like.bind(this);
     }
 
     componentDidMount() {
@@ -106,7 +109,16 @@ class AllPosts extends React.Component {
             .then(response => response.json())
             .then(result => {
                 console.log(result)
-                this.setState({ posts: result.posts, current_user: result.current_user })
+                var aux = []
+                if (result.liked_posts !== null) {
+                    result.liked_posts.map((post) => {
+                        aux.push(post.id)
+                    })
+                    this.setState({ posts: result.posts, current_user: result.current_user, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                } else {
+                    this.setState({ posts: result.posts, current_user: result.current_user })
+                }
+
             })
             .catch(e => {
                 console.log(e);
@@ -137,6 +149,50 @@ class AllPosts extends React.Component {
         ReactDOM.render(<EditPost post_id={event.currentTarget.getAttribute("data-post")} />, document.querySelector(`#post${event.currentTarget.getAttribute("data-post")}`))
     }
 
+    like(event) {
+        fetch('/like', {
+            method: 'POST',
+            body: JSON.stringify({
+                post_id: event.currentTarget.getAttribute("data-post")
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                var aux = []
+                if (result.liked_posts !== null) {
+                    result.liked_posts.map((post) => {
+                        aux.push(post.id)
+                    })
+                    this.setState({ posts: result.posts, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                } else {
+                    this.setState({ posts: result.posts })
+                }
+
+            })
+    }
+
+    unlike(event) {
+        fetch('/unlike', {
+            method: 'POST',
+            body: JSON.stringify({
+                post_id: event.currentTarget.getAttribute("data-post")
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                var aux = []
+                if (result.liked_posts !== null) {
+                    result.liked_posts.map((post) => {
+                        aux.push(post.id)
+                    })
+                    this.setState({ posts: result.posts, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                } else {
+                    this.setState({ posts: result.posts })
+                }
+
+            })
+    }
+
     render() {
 
         var posts = this.state.posts.map((post) => {
@@ -149,7 +205,8 @@ class AllPosts extends React.Component {
                     <div id={"post" + post.id}>{post.content}</div>
                     <div className="timestamp">{post.timestamp}</div>
                     <div className="row">
-                        <i className="bi bi-star ml-3 mr-1"></i>
+                        {!this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1"></i></a>}
+                        {this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1"></i></a>}
                         <div>{post.likes}</div>
                     </div>
                 </div>
