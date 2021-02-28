@@ -157,14 +157,18 @@ class AllPosts extends React.Component {
         })
             .then(response => response.json())
             .then(result => {
-                var aux = []
-                if (result.liked_posts !== null) {
-                    result.liked_posts.map((post) => {
-                        aux.push(post.id)
-                    })
-                    this.setState({ posts: result.posts, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                if (result.error) {
+                    window.location = '/login'
                 } else {
-                    this.setState({ posts: result.posts })
+                    var aux = []
+                    if (result.liked_posts !== null) {
+                        result.liked_posts.map((post) => {
+                            aux.push(post.id)
+                        })
+                        this.setState({ posts: result.posts, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                    } else {
+                        this.setState({ posts: result.posts })
+                    }
                 }
 
             })
@@ -196,16 +200,16 @@ class AllPosts extends React.Component {
 
         var posts = this.state.posts.map((post) => {
             return (
-                <div key={post.id} className="container col-12">
-                    <a className="username" data-username={post.poster} onClick={this.goProfile}><strong>{post.poster}</strong></a>
+                <div key={post.id} className="container col-12 post">
+                    <a className="username pointer" data-username={post.poster} onClick={this.goProfile}><strong>{post.poster}</strong></a>
                     {this.state.current_user == post.poster &&
-                        <div><a data-post={post.id} onClick={this.edit} className="page-link" >Edit</a></div>
+                        <div><a data-post={post.id} onClick={this.edit} className="pointer" >Edit</a></div>
                     }
                     <div id={"post" + post.id}>{post.content}</div>
                     <div className="timestamp">{post.timestamp}</div>
                     <div className="row">
-                        {!this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1"></i></a>}
-                        {this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1"></i></a>}
+                        {!this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1 pointer"></i></a>}
+                        {this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1 pointer"></i></a>}
                         <div>{post.likes}</div>
                     </div>
                 </div>
@@ -217,8 +221,8 @@ class AllPosts extends React.Component {
                 <div>{posts.slice(this.state.postsStart, this.state.postsEnd)}</div>
                 <nav aria-label="Page navigation example" className="col-12">
                     <ul className="pagination">
-                        {this.state.postsStart > 0 && <li className="page-item"><a className="page-link" onClick={this.previousPage}>Previous</a></li>}
-                        {this.state.posts.length > 10 && this.state.posts.length > this.state.postsEnd && <li className="page-item"><a className="page-link" onClick={this.nextPage}>Next</a></li>}
+                        {this.state.postsStart > 0 && <li className="page-item"><a className="page-link pointer" onClick={this.previousPage}>Previous</a></li>}
+                        {this.state.posts.length > 10 && this.state.posts.length > this.state.postsEnd && <li className="page-item"><a className="page-link pointer" onClick={this.nextPage}>Next</a></li>}
                     </ul>
                 </nav>
             </div>

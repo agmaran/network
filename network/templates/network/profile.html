@@ -12,10 +12,10 @@
 </div>
 <div id="my-posts">
     {% for post in page.object_list %}
-    <div data-post={{post.id}} class="container col-12">
-        <h3>{{post.poster}}</h3>
+    <div data-post={{post.id}} class="container col-12 post">
+        <div class="username">{{post.poster}}</div>
         {% if user == user_profile %}
-        <div><a data-post={{post.id}} class="edit page-link">Edit</a></div>
+        <div><a data-post={{post.id}} class="edit pointer">Edit</a></div>
         {% endif %}
         <div id="post{{post.id}}">{{post.content}}</div>
         <div class="timestamp">{{post.timestamp}}</div>
@@ -27,11 +27,11 @@
 <nav aria-label="Page navigation example" class="col-12">
     <ul class="pagination">
         {% if page.has_previous %}
-        <li class="page-item"><a class="page-link"
+        <li class="page-item pointer"><a class="page-link"
                 href="{% url 'profile' page.previous_page_number user_profile.username %}">Previous</a></li>
         {% endif %}
         {% if page.has_next %}
-        <li class="page-item"><a class="page-link"
+        <li class="page-item pointer"><a class="page-link"
                 href="{% url 'profile' page.next_page_number user_profile.username %}">Next</a></li>
         {% endif %}
     </ul>

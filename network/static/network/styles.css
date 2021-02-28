@@ -12,7 +12,7 @@
 }
 
 .username {
-    cursor: pointer;
+    font-weight: bold;
 }
 
 .no-posts {
@@ -20,10 +20,23 @@
     margin: 1rem;
 }
 
-.page-link {
+.bottom {
+    align-items: baseline;
+}
+
+.margin {
+    margin: 1rem;
+}
+
+.pointer {
     cursor: pointer;
 }
 
-.bottom {
-    align-items: baseline;
+.pointer:hover {
+    font-size: 1.1rem;
+    color: aqua;
+}
+
+.post:hover{
+    font-size: 1.1rem;
 }

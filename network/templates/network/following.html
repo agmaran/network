@@ -4,8 +4,8 @@
 <h1 class="ml-1">Posts made by users you follow</h1>
 <div id="my-posts">
     {% for post in page.object_list %}
-    <div data-post={{post.id}} class="container col-12">
-        <a class="username" href="{% url 'profile' 1 post.poster %}"><strong>{{ post.poster }}</strong></a>
+    <div data-post={{post.id}} class="container col-12 post">
+        <a href="{% url 'profile' 1 post.poster %}"><strong>{{ post.poster }}</strong></a>
         <p>{{post.content}}</p>
         <div class="timestamp">{{post.timestamp}}</div>
         <div id="post-{{post.id}}"></div>
@@ -15,11 +15,11 @@
 <nav aria-label="Page navigation example" class="col-12">
     <ul class="pagination">
         {% if page.has_previous %}
-        <li class="page-item"><a class="page-link" href="{% url 'following' page.previous_page_number %}">Previous</a>
+        <li class="page-item pointer"><a class="page-link" href="{% url 'following' page.previous_page_number %}">Previous</a>
         </li>
         {% endif %}
         {% if page.has_next %}
-        <li class="page-item"><a class="page-link" href="{% url 'following' page.next_page_number %}">Next</a></li>
+        <li class="page-item pointer"><a class="page-link" href="{% url 'following' page.next_page_number %}">Next</a></li>
         {% endif %}
     </ul>
 </nav>
