@@ -133,8 +133,11 @@ class Likes extends React.Component {
         })
             .then(response => response.json())
             .then(result => {
-                this.setState({ post: result.post, liked: result.liked })
-
+                if (result.error) {
+                    window.location = '/login'
+                } else {
+                    this.setState({ post: result.post, liked: result.liked })
+                }
             })
     }
 
@@ -155,8 +158,8 @@ class Likes extends React.Component {
         return (
 
             <div className="row">
-                {!this.state.liked && <a data-post={this.state.post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1"></i></a>}
-                {this.state.liked && <a data-post={this.state.post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1"></i></a>}
+                {!this.state.liked && <a data-post={this.state.post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1 pointer"></i></a>}
+                {this.state.liked && <a data-post={this.state.post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1 pointer"></i></a>}
                 <div>{this.state.post.likes}</div>
             </div>
 

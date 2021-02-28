@@ -175,26 +175,30 @@ def editpost(request):
 
 
 @csrf_exempt
-@login_required(login_url="login")
 def like(request):
-    data = json.loads(request.body)
-    post = Post.objects.get(pk=data.get("post_id"))
-    user = User.objects.get(pk=request.user.id)
-    post.likes.add(user)
-    posts = Post.objects.all()
-    posts = posts.order_by("-timestamp").all()
-    liked_posts = user.liked_posts.all()
-    return JsonResponse({'posts': [post.serialize() for post in posts], 'liked_posts': [post.serialize() for post in liked_posts]}, safe=False)
+    if request.user.is_authenticated:
+        data = json.loads(request.body)
+        post = Post.objects.get(pk=data.get("post_id"))
+        user = User.objects.get(pk=request.user.id)
+        post.likes.add(user)
+        posts = Post.objects.all()
+        posts = posts.order_by("-timestamp").all()
+        liked_posts = user.liked_posts.all()
+        return JsonResponse({'posts': [post.serialize() for post in posts], 'liked_posts': [post.serialize() for post in liked_posts]}, safe=False)
+    else:
+        return JsonResponse({'error': "user not authenticated"})
 
 
 @csrf_exempt
-@login_required(login_url="login")
 def likes(request):
-    data = json.loads(request.body)
-    post = Post.objects.get(pk=data.get("post_id"))
-    user = User.objects.get(pk=request.user.id)
-    post.likes.add(user)
-    return JsonResponse({'post': post.serialize(), 'liked': True})
+    if request.user.is_authenticated:
+        data = json.loads(request.body)
+        post = Post.objects.get(pk=data.get("post_id"))
+        user = User.objects.get(pk=request.user.id)
+        post.likes.add(user)
+        return JsonResponse({'post': post.serialize(), 'liked': True})
+    else:
+        return JsonResponse({'error': "user not authenticated"})
 
 
 @csrf_exempt

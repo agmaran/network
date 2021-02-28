@@ -13,7 +13,7 @@
 <div id="my-posts">
     {% for post in page.object_list %}
     <div data-post={{post.id}} class="container col-12">
-        <h3>{{post.poster}}</h3>
+        <div class="username">{{post.poster}}</div>
         {% if user == user_profile %}
         <div><a data-post={{post.id}} class="edit page-link">Edit</a></div>
         {% endif %}

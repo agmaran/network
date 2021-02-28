@@ -157,14 +157,18 @@ class AllPosts extends React.Component {
         })
             .then(response => response.json())
             .then(result => {
-                var aux = []
-                if (result.liked_posts !== null) {
-                    result.liked_posts.map((post) => {
-                        aux.push(post.id)
-                    })
-                    this.setState({ posts: result.posts, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                if (result.error) {
+                    window.location = '/login'
                 } else {
-                    this.setState({ posts: result.posts })
+                    var aux = []
+                    if (result.liked_posts !== null) {
+                        result.liked_posts.map((post) => {
+                            aux.push(post.id)
+                        })
+                        this.setState({ posts: result.posts, liked_posts: result.liked_posts, liked_posts_ids: aux })
+                    } else {
+                        this.setState({ posts: result.posts })
+                    }
                 }
 
             })
@@ -204,8 +208,8 @@ class AllPosts extends React.Component {
                     <div id={"post" + post.id}>{post.content}</div>
                     <div className="timestamp">{post.timestamp}</div>
                     <div className="row">
-                        {!this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1"></i></a>}
-                        {this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1"></i></a>}
+                        {!this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.like}><i className="bi bi-star ml-3 mr-1 pointer"></i></a>}
+                        {this.state.liked_posts_ids.includes(post.id) && <a data-post={post.id} onClick={this.unlike}><i className="bi bi-star-fill ml-3 mr-1 pointer"></i></a>}
                         <div>{post.likes}</div>
                     </div>
                 </div>
