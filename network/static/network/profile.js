@@ -20,7 +20,7 @@ class Follow extends React.Component {
             fetch('/follow', {
                 method: 'POST',
                 body: JSON.stringify({
-                    username: event.currentTarget.getAttribute("data-username")
+                    username: document.querySelector('#follow-button').getAttribute("data-username")
                 })
             })
         } else {
@@ -31,7 +31,7 @@ class Follow extends React.Component {
                 fetch('/unfollow', {
                     method: 'POST',
                     body: JSON.stringify({
-                        username: event.currentTarget.getAttribute("data-username")
+                        username: document.querySelector('#follow-button').getAttribute("data-username")
                     })
                 })
             }

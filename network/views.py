@@ -135,7 +135,7 @@ def unfollow(request):
     data = json.loads(request.body)
     following = User.objects.get(username=data.get("username"))
     follower = request.user
-    follow = Follow.objects.filter(follower=follower, following=following)
+    follow = Follow.objects.get(follower=follower, following=following)
     follow.delete()
     return JsonResponse({"message": "You are no longer following this user."})
 

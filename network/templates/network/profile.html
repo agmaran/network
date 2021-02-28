@@ -7,8 +7,7 @@
     <div class="col-1" id="followers" data-followers={{followers}}>Followers: {{followers}}</div>
     <div class="col-1">Following: {{following}}</div>
     {% if user.is_authenticated%}
-    <div class="mt-1 mb-1 ml-3 col-1" id="follow-button" data-username={{ user_profile.username }}
-        data-button={{button}}></div>
+    <div class="mt-1 mb-1 ml-3 col-1" id="follow-button" data-username={{user_profile.username}} data-button={{button}}></div>
     {% endif %}
 </div>
 <div id="my-posts">
