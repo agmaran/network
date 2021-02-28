@@ -6,42 +6,38 @@
     <h2 class="ml-3 col-2">{{user_profile.username}}</h2>
     <div class="col-1" id="followers" data-followers={{followers}}>Followers: {{followers}}</div>
     <div class="col-1">Following: {{following}}</div>
-    <div id="follow-button"></div>
-    {% if user.is_authenticated and user != user_profile %}
+    {% if user.is_authenticated%}
     <div class="mt-1 mb-1 ml-3 col-1" id="follow-button" data-username={{ user_profile.username }}
         data-button={{button}}></div>
     {% endif %}
 </div>
 <div id="my-posts">
     {% for post in page.object_list %}
-    <div class="container col-12">
+    <div data-post={{post.id}} class="container col-12">
         <h3>{{post.poster}}</h3>
         {% if user == user_profile %}
         <div><a data-post={{post.id}} class="edit page-link">Edit</a></div>
         {% endif %}
         <div id="post{{post.id}}">{{post.content}}</div>
         <div class="timestamp">{{post.timestamp}}</div>
-        <div class="row">
-            <i class="bi bi-star ml-3 mr-1"></i>
-            <div>{{post.likes}}</div>
-        </div>
+        <div id="post-{{post.id}}"></div>
     </div>
-    {% empty %}
-    <div class="no-posts col-12">This user has no posts.</div>
     {% endfor %}
-    <nav aria-label="Page navigation example" class="col-12">
-        <ul class="pagination">
-            {% if page.has_previous %}
-            <li class="page-item"><a class="page-link"
-                    href="{% url 'profile' page.previous_page_number user_profile.username %}">Previous</a></li>
-            {% endif %}
-            {% if page.has_next %}
-            <li class="page-item"><a class="page-link"
-                    href="{% url 'profile' page.next_page_number user_profile.username %}">Next</a></li>
-            {% endif %}
-        </ul>
-    </nav>
 </div>
+
+<nav aria-label="Page navigation example" class="col-12">
+    <ul class="pagination">
+        {% if page.has_previous %}
+        <li class="page-item"><a class="page-link"
+                href="{% url 'profile' page.previous_page_number user_profile.username %}">Previous</a></li>
+        {% endif %}
+        {% if page.has_next %}
+        <li class="page-item"><a class="page-link"
+                href="{% url 'profile' page.next_page_number user_profile.username %}">Next</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
 {% endblock %}
 {% block script %}
 <script type="text/babel" src="{% static 'network/profile.js' %}"></script>

@@ -98,10 +98,11 @@ def profile(request, username, page_num):
     user = User.objects.get(username=username)
     followers = Follow.objects.filter(following=user)
     following = Follow.objects.filter(follower=user)
+    button = "your_profile"
     if (request.user.is_authenticated):
         if (Follow.objects.filter(follower=request.user, following=user).count() == 1):
             button = "unfollow"
-        else:
+        elif request.user != user:
             button = "follow"
     else:
         button = "follow"
@@ -188,6 +189,16 @@ def like(request):
 
 @csrf_exempt
 @login_required(login_url="login")
+def likes(request):
+    data = json.loads(request.body)
+    post = Post.objects.get(pk=data.get("post_id"))
+    user = User.objects.get(pk=request.user.id)
+    post.likes.add(user)
+    return JsonResponse({'post': post.serialize(), 'liked': True})
+
+
+@csrf_exempt
+@login_required(login_url="login")
 def unlike(request):
     data = json.loads(request.body)
     post = Post.objects.get(pk=data.get("post_id"))
@@ -197,3 +208,28 @@ def unlike(request):
     posts = posts.order_by("-timestamp").all()
     liked_posts = user.liked_posts.all()
     return JsonResponse({'posts': [post.serialize() for post in posts], 'liked_posts': [post.serialize() for post in liked_posts]}, safe=False)
+
+
+@csrf_exempt
+@login_required(login_url="login")
+def unlikes(request):
+    data = json.loads(request.body)
+    post = Post.objects.get(pk=data.get("post_id"))
+    user = User.objects.get(pk=request.user.id)
+    post.likes.remove(user)
+    return JsonResponse({'post': post.serialize(), 'liked': False})
+
+
+@csrf_exempt
+def post(request):
+    data = json.loads(request.body)
+    post = Post.objects.get(pk=data.get("post_id"))
+    if request.user.is_authenticated:
+        user = User.objects.get(pk=request.user.id)
+        if user in post.likes.all():
+            liked = True
+        else:
+            liked = False
+    else:
+        liked = False
+    return JsonResponse({'post': post.serialize(), 'liked': liked})

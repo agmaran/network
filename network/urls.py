@@ -16,5 +16,8 @@ urlpatterns = [
     path("<int:page_num>/following", views.following, name="following"),
     path("editpost", views.editpost, name="editpost"),
     path("like", views.like, name="like"),
-    path("unlike", views.unlike, name="unlike")
+    path("unlike", views.unlike, name="unlike"),
+    path("post", views.post, name="post"),
+    path("likes", views.likes, name="likes"),
+    path("unlikes", views.unlikes, name="unlikes")
 ]
