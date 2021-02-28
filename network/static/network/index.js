@@ -101,7 +101,6 @@ class AllPosts extends React.Component {
         this.edit = this.edit.bind(this);
         this.like = this.like.bind(this);
         this.unlike = this.unlike.bind(this);
-        this.includes = this.like.bind(this);
     }
 
     componentDidMount() {
