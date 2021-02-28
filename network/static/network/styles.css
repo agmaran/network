@@ -20,10 +20,6 @@
     margin: 1rem;
 }
 
-.page-link {
-    cursor: pointer;
-}
-
 .bottom {
     align-items: baseline;
 }
@@ -39,4 +35,8 @@
 .pointer:hover {
     font-size: 1.1rem;
     color: aqua;
+}
+
+.post:hover{
+    font-size: 1.1rem;
 }
